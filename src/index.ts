@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 import express, { Request, Response } from "express";
 import { imageRecognitionController } from "./controllers/image.controllers";
 import { upload } from "./middlewares/multer.middleware";

@@ -1,22 +1,26 @@
 import { IMAGGA_API_KEY, IMAGGA_API_SECRET } from "./config";
-import got from "got";
+import axios from "axios";
 
 const apiKey = IMAGGA_API_KEY;
 const apiSecret = IMAGGA_API_SECRET;
 
 export const imageTags = async (imageUrl: string) => {
-  const url =
-    "https://api.imagga.com/v2/tags?image_url=" + encodeURIComponent(imageUrl);
+  const url = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(
+    imageUrl
+  )}`;
+
   try {
-    const response = await got(url, {
+    const response = await axios.get(url, {
       headers: {
         Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString(
           "base64"
         )}`,
       },
     });
-    console.log(response.body);
+
+    console.log(response.data);
+    return response.data;
   } catch (error: any) {
-    console.log(error?.response?.body);
+    console.error(error?.response?.data || "An error occurred");
   }
 };

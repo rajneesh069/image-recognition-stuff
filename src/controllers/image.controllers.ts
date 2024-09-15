@@ -5,28 +5,34 @@ import fs from "fs";
 
 export async function imageRecognitionController(req: Request, res: Response) {
   const localFilePath = req.file?.path;
-  
+
   if (!localFilePath) {
     return res.status(400).json({ message: "No file uploaded." });
   }
 
   try {
     const cloudinaryResult = await uploadOnCloudinary(localFilePath);
-    
+    //@ts-ignore
     if (!cloudinaryResult || !cloudinaryResult.secure_url) {
-      return res.status(500).json({ message: "Failed to upload image to Cloudinary." });
+      return res
+        .status(500)
+        .json({ message: "Failed to upload image to Cloudinary." });
     }
-
+    //@ts-ignore
     const imageUrl = cloudinaryResult.secure_url;
 
     const tags = await imageTags(imageUrl);
 
     fs.unlinkSync(localFilePath);
 
-    return res.status(200).json({ tags, message: "Tags generated successfully", imageUrl });
+    return res
+      .status(200)
+      .json({ tags, message: "Tags generated successfully", imageUrl });
   } catch (error) {
     console.error(error);
-    fs.unlinkSync(localFilePath); 
-    return res.status(500).json({ message: "An error occurred during image processing." });
+    fs.unlinkSync(localFilePath);
+    return res
+      .status(500)
+      .json({ message: "An error occurred during image processing." });
   }
 }
