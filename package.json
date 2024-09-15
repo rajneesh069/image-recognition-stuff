@@ -15,11 +15,14 @@
   "author": "Rajneesh Mishra",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^1.41.3",
     "express": "^4.21.0",
-    "got": "^14.4.2"
+    "got": "^14.4.2",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/got": "^9.6.12"
+    "@types/got": "^9.6.12",
+    "@types/multer": "^1.4.12"
   }
 }

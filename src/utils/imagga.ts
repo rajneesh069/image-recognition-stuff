@@ -4,7 +4,7 @@ import got from "got";
 const apiKey = IMAGGA_API_KEY;
 const apiSecret = IMAGGA_API_SECRET;
 
-const imageTags = async (imageUrl: string) => {
+export const imageTags = async (imageUrl: string) => {
   const url =
     "https://api.imagga.com/v2/tags?image_url=" + encodeURIComponent(imageUrl);
   try {

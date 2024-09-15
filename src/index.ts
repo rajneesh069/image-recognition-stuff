@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { imageRecognitionController } from "./controllers/image.controllers";
 
 const app = express();
 const PORT = 8000;
