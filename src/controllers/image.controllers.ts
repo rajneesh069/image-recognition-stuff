@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { imageTags } from "../utils/imagga";
 import { uploadOnCloudinary } from "../utils/cloudinary";
 import fs from "fs";
+import { findTagWithHighestConfidence } from "../utils/extractTag";
 
 export async function imageRecognitionController(req: Request, res: Response) {
   const localFilePath = req.file?.path;
@@ -22,12 +23,15 @@ export async function imageRecognitionController(req: Request, res: Response) {
     const imageUrl = cloudinaryResult.secure_url;
 
     const tags = await imageTags(imageUrl);
-
+    const tagWith100Confidence = findTagWithHighestConfidence(
+      tags.result?.tags
+    );
     fs.unlinkSync(localFilePath);
 
-    return res
-      .status(200)
-      .json({ tags, message: "Tags generated successfully", imageUrl });
+    return res.status(200).json({
+      message: "Tags generated successfully",
+      tagWith100Confidence,
+    });
   } catch (error) {
     console.error(error);
     fs.unlinkSync(localFilePath);
