@@ -1,13 +1,32 @@
 import { Request, Response } from "express";
 import { imageTags } from "../utils/imagga";
+import { uploadOnCloudinary } from "../utils/cloudinary";
+import fs from "fs";
 
 export async function imageRecognitionController(req: Request, res: Response) {
-  const imageUrl = req.body;
+  const localFilePath = req.file?.path;
+  
+  if (!localFilePath) {
+    return res.status(400).json({ message: "No file uploaded." });
+  }
+
   try {
+    const cloudinaryResult = await uploadOnCloudinary(localFilePath);
+    
+    if (!cloudinaryResult || !cloudinaryResult.secure_url) {
+      return res.status(500).json({ message: "Failed to upload image to Cloudinary." });
+    }
+
+    const imageUrl = cloudinaryResult.secure_url;
+
     const tags = await imageTags(imageUrl);
-    return res.json({ tags, message: "Tags generated" }).status(200);
+
+    fs.unlinkSync(localFilePath);
+
+    return res.status(200).json({ tags, message: "Tags generated successfully", imageUrl });
   } catch (error) {
     console.error(error);
-    return res.json({ message: "Some error occured" }).status(500);
+    fs.unlinkSync(localFilePath); 
+    return res.status(500).json({ message: "An error occurred during image processing." });
   }
 }
